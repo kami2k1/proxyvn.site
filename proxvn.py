@@ -95,7 +95,7 @@ class PROXYVN_SITE:
             "password": self.password,
             "merchantId": self.merchantId,
             "csrfToken": token,
-            "callbackUrl": self.path.host + "lich-su-doi-proxy"  
+            "callbackUrl": self.path.host 
         }
         
      
@@ -135,7 +135,7 @@ class PROXYVN_SITE:
     def Change_IP_Proxy(self, ids , retry = 0 ) -> bool:
         if retry > 3:
             print("Retry limit exceeded for Change IP Proxy")
-            return False
+            return 
         """ Change IP Proxy  list or single id """
         data = []
         if not isinstance(ids, list ) :
@@ -152,10 +152,8 @@ class PROXYVN_SITE:
                 print(f"[{id}] Change IP Proxy failed, please login again")
                 self.login()
                 print(f"[{id}] retrying Change IP Proxy")
-                if self.Change_IP_Proxy(id, retry + 1):
-                    print(f"[{id}] Change IP Proxy success after retry")
-                else:
-                    print(f"[{id}] Change IP Proxy failed after retry")
+                self.Change_IP_Proxy(id, retry + 1) # gọi dệ quy 1 lần nữa
+
             elif code == 400:
                 print(f"[{id}] Change IP Proxy failed, invalid id")
             elif code == 861 and ("msg" in r.get("errors", {})):
@@ -163,7 +161,7 @@ class PROXYVN_SITE:
                 print(f"[{id}] {r['errors']['msg']}")
             elif r['status'] == "success":
                 print(f"[{id}] Change IP Proxy success")
-                
+        
 
 
 
