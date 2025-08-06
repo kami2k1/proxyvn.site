@@ -1,0 +1,16 @@
+{
+  "user": {
+    "id": "4932afe5-112a-49c7-8a34-c489ee8475e8",
+    "firstName": "Tôi",
+    "lastName": "tồi",
+    "phone": "+84123456789",
+    "coin": "0",
+    "merchantId": "e7c649f3-1c6c-4f59-a475-b8988a59efde",
+    "roleId": 3,
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZXNzaW9uSWQiOjIyNzgsImhhc2giOiJiMzU1ZGJkZjQ3YTQyN2RiNGRjYzU3ZjU2MDk2NWQ2ZDIxNjIwMmZiY2JhYWQ1MDcxOGE0YjFkMTVjNjE4ODhkIiwiaWF0IjoxNzU0NTAwNjIzLCJleHAiOjIwNjk4NjA2MjN9.6sQp1PXxeUZG7HUmiPz_sPtWYHxzAh__omg53dzfm7g",
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQ5MzJhZmU1LTExMmEtNDljNy04YTM0LWM0ODllZTg0NzVlOCIsIm1lcmNoYW50SWQiOiJlN2M2NDlmMy0xYzZjLTRmNTktYTQ3NS1iODk4OGE1OWVmZGUiLCJyb2xlIjp7ImlkIjozLCJuYW1lIjoiVXNlciIsIl9fZW50aXR5IjoiUm9sZUVudGl0eSJ9LCJzZXNzaW9uSWQiOjIyNzgsImlhdCI6MTc1NDUwMDYyMywiZXhwIjoxNzU0NTAzMzIzfQ.rhS_7NEaMMi5v7IMmywWOBYLxKIrNGe9ZdDR5pejS5s",
+    "tokenExpires": 1754503323379
+  },
+  "expires": 1754503323379,
+  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQ5MzJhZmU1LTExMmEtNDljNy04YTM0LWM0ODllZTg0NzVlOCIsIm1lcmNoYW50SWQiOiJlN2M2NDlmMy0xYzZjLTRmNTktYTQ3NS1iODk4OGE1OWVmZGUiLCJyb2xlIjp7ImlkIjozLCJuYW1lIjoiVXNlciIsIl9fZW50aXR5IjoiUm9sZUVudGl0eSJ9LCJzZXNzaW9uSWQiOjIyNzgsImlhdCI6MTc1NDUwMDYyMywiZXhwIjoxNzU0NTAzMzIzfQ.rhS_7NEaMMi5v7IMmywWOBYLxKIrNGe9ZdDR5pejS5s"
+}
