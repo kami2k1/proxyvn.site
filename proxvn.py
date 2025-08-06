@@ -6,6 +6,8 @@ class path:
         self.csrf = host+ "api/auth/csrf"
         self.login = host + "api/auth/callback/credentials"
         self.sesseion = host + "api/auth/session"
+        self.my_ip = host + "quang/api/v1/users/proxies?page=1&limit=5000"
+        
 
 class PROXYVN_SITE: 
     """ bypass Kamidev """
@@ -16,16 +18,58 @@ class PROXYVN_SITE:
         self.path = path()
         self.req.get(self.path.host)  # Initialize session with the host
         self.merchantId ="e7c649f3-1c6c-4f59-a475-b8988a59efde"
+        self.login()
+        self.MY_ip_static = []
+        self.MY_IP_rote = []
 
         self.token = None
     @staticmethod
     def Extreact_request(response :
          requests.Response)-> dict:
-        if response.status_code == 200:
+        """ Extract JSON data from response """
+        try:
+            if response.status_code != 200:
+                print(f"Error: {response.status_code}")
             return response.json()
-        else:
-            raise Exception(f"Error: {response.status_code} - {response.text}")
-
+        
+        except : 
+          raise Exception("Failed to extract JSON from response, response may not be in JSON format")
+    def GETMY_IP(self):
+        """ Get my IP """
+        response = self.req.get(self.path.my_ip)
+        data = self.Extreact_request(response)
+        data = data.get("data", [])
+        for item in data:
+            id = item.get("id")
+            ip= item['proxy']['ipaddress']['ip']
+            user = item['proxy']['username']
+            password = item['proxy']['password']
+            port = item['proxy']['port']
+            pro_type = item['proxy']['ipaddress']['categorytype']['slug']
+            protocol = item['protocol']
+            if pro_type == "static":
+                self.MY_ip_static.append({
+                    "id": id,
+                    "ip": ip,
+                    "user": user,
+                    "password": password,
+                    "port": port,
+                    "type": pro_type,
+                    "protocol": protocol
+                })
+            elif pro_type == "rote":
+                self.MY_IP_rote.append({
+                    "id": id,
+                    "ip": ip,
+                    "user": user,
+                    "password": password,
+                    "port": port,
+                    "type": pro_type,
+                    "protocol": protocol
+                })
+            
+            print(f"ID: {id}, IP: {ip}, User: {user}, Password: {password}, Port: {port}, Type: {pro_type}, Protocol: {protocol}")
+    
     def get_csrf_token(self)-> str:
         response = self.req.get(self.path.csrf)
         data = self.Extreact_request(response)
@@ -88,7 +132,41 @@ class PROXYVN_SITE:
             # print(data)
         
         return response
-    def Changer_IP_PROXY()
+    def Change_IP_Proxy(self, ids , retry = 0 ) -> bool:
+        if retry > 3:
+            print("Retry limit exceeded for Change IP Proxy")
+            return False
+        """ Change IP Proxy  list or single id """
+        data = []
+        if not isinstance(ids, list ) :
+            data.append(ids)
+        else:
+            data = ids
+        for id in data:
+            r = self.req.get(self.path.host + f"quang/api/v1/proxies/{id}/rotate")
+            r = self.Extreact_request(r)
+            
+            code =  r.get("statusCode", 861)
+            
+            if code == 401:
+                print(f"[{id}] Change IP Proxy failed, please login again")
+                self.login()
+                print(f"[{id}] retrying Change IP Proxy")
+                if self.Change_IP_Proxy(id, retry + 1):
+                    print(f"[{id}] Change IP Proxy success after retry")
+                else:
+                    print(f"[{id}] Change IP Proxy failed after retry")
+            elif code == 400:
+                print(f"[{id}] Change IP Proxy failed, invalid id")
+            elif code == 861 and ("msg" in r.get("errors", {})):
+                
+                print(f"[{id}] {r['errors']['msg']}")
+            elif r['status'] == "success":
+                print(f"[{id}] Change IP Proxy success")
+                
+
+
+
 
 
 
