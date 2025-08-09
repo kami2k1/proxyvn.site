@@ -1,7 +1,7 @@
 from flask import Flask ,jsonify , request
 import proxvn
 import json
-App = Flask(__name__)
+app = Flask(__name__)
 TOKEN = {}
 import threading
 TToken_lock = threading.Lock()
@@ -11,7 +11,7 @@ req = {
    "msg": ""
 }
 
-@App.route("/quang3")
+@app.route("/quang3")
 def quang3():
   rq = req.copy()
   token = request.args.get('token', "")
@@ -69,5 +69,5 @@ def quang3():
     TOKEN[key] =  User.Token
 
   return jsonify(rq)
-# App.run(debug=True, host="0.0.0.0", port=5000)
+# app.run(debug=True, host="0.0.0.0", port=5000)
 
