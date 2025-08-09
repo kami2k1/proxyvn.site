@@ -11,36 +11,43 @@ class path:
 
 class PROXYVN_SITE: 
     """ bypass Kamidev """
-    def __init__(self , user , password):
+    def __init__(self , user , password  ,token  : str = None):
         self.user = user
         self.password = password
-       
         self.req = requests.Session()
         self.path = path()
         self.req.get(self.path.host)  # Initialize session with the host
+        self.Token = ""
         self.merchantId ="e7c649f3-1c6c-4f59-a475-b8988a59efde"
-        self.login()
+        if not token:
+            self.login()
+        else:
+            self.req.headers.update({
+                    "Authorization": f"Bearer {token}"
+                })
+            
         self.MY_ip_static = []
         self.MY_IP_rote = []
 
-        self.token = None
+        
     @staticmethod
     def Extreact_request(response :
          requests.Response)-> dict:
         """ Extract JSON data from response """
         try:
             if response.status_code != 200:
-                #print(f"Error: {response.status_code}")
+                print(f"Error: {response.status_code}")
             return response.json()
         
         except : 
           raise Exception("Failed to extract JSON from response, response may not be in JSON format")
     def GETMY_IP(self):
         """ Get my IP """
+        
         response = self.req.get(self.path.my_ip)
         data = self.Extreact_request(response)
         data = data.get("data", [])
-        #print(data)
+
         for item in data:
             id = item.get("id")
             ip= item['proxy']['ipaddress']['ip']
@@ -70,7 +77,8 @@ class PROXYVN_SITE:
                     "protocol": protocol
                 })
             
-            #print(f"ID: {id}, IP: {ip}, User: {user}, Password: {password}, Port: {port}, Type: {pro_type}, Protocol: {protocol}")
+            print(f"ID: {id}, IP: {ip}, User: {user}, Password: {password}, Port: {port}, Type: {pro_type}, Protocol: {protocol}")
+        return data
     
     def get_csrf_token(self)-> str:
         response = self.req.get(self.path.csrf)
@@ -87,11 +95,12 @@ class PROXYVN_SITE:
         return data
     
 
-    def login(self):
+    def login(self) -> bool:
         if len(self.user) < 3 or len(self.password) < 3:
-            return
+            return False
+
         token = self.get_csrf_token()
-        #print(f"CSRF Token: {token}")
+        print(f"CSRF Token: {token}")
         
         # Data phải được URL encode đúng cách
         prams = {
@@ -127,24 +136,25 @@ class PROXYVN_SITE:
                 self.req.headers.update({
                     "Authorization": f"Bearer {data.get('accessToken')}"
                 })
-                self.token = data.get('accessToken')
-                print(f"Login successful, token: {self.token}")
+                self.Token = data.get('accessToken')
+                print(f"Login successful, token: {self.Token}")
+                return True
             # Uncomment để in dữ liệu đăng nhập
             else:
-                ""
-                #print("Login failed, no session data returned.")
+                print("Login failed, no session data returned.")
                 # raise Exception("Login failed, no session data returned. user password may be incorrect.")
            
             # data = self.Extreact_request(response)
-            # #print(data)
+            # print(data)
         
-        return response
-    def Change_IP_Proxy(self, ids , retry = 0 ) -> bool:
+        return False
+    def Change_IP_Proxy(self, ids , retry = 0 ):
         if retry > 3:
-            #print("Retry limit exceeded for Change IP Proxy")
+            print("Retry limit exceeded for Change IP Proxy")
             return 
         """ Change IP Proxy  list or single id """
         data = []
+        msg = " "
         if not isinstance(ids, list ) :
             data.append(ids)
         else:
@@ -156,25 +166,24 @@ class PROXYVN_SITE:
             code =  r.get("statusCode", 861)
             
             if code == 401:
-                #print(f"[{id}] Change IP Proxy failed, please login again")
+                msg = f"[{id}] Change IP Proxy failed, please login again"
+                print(f"[{id}] Change IP Proxy failed, please login again")
                 self.login()
-                #print(f"[{id}] retrying Change IP Proxy")
+                print(f"[{id}] retrying Change IP Proxy")
                 self.Change_IP_Proxy(id, retry + 1) # gọi dệ quy 1 lần nữa
 
             elif code == 400:
-                #print(f"[{id}] Change IP Proxy failed, invalid id")
+                print(f"[{id}] Change IP Proxy failed, invalid id")
+                msg = f"[{id}] Change IP Proxy failed, invalid id"
             elif code == 861 and ("msg" in r.get("errors", {})):
-                
-                #print(f"[{id}] {r['errors']['msg']}")
+                msg = f"[{id}] {r['errors']['msg']}"
+                msg = f"[{id}] {r['errors']['msg']}"
             elif r['status'] == "success":
-                #print(f"[{id}] Change IP Proxy success")
-                return True
-        return False
-        
+                print(f"[{id}] Change IP Proxy success")
+                msg = f"[{id}] Change IP Proxy success"
 
+                return True, msg
 
-
-
-
+        return False, msg
 
 
